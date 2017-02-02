@@ -316,6 +316,8 @@ getYearBalanceLineChartArray(){ return this.YearBalanceLineChartArray;}
 
 getYearLineChartArray () { return this.YearLineChartArray;}
 
+getYearLineBalanceChartArray () { return this.YearLineBalanceChartArray;}
+
 getCycleData(){return this.cycleData;}
 
 
@@ -383,6 +385,7 @@ updateChartsFromExcell(){
 	this.AllTransactions = excellInput.getAllTransactions();
 	this.YearBalanceLineChartArray = excellInput.getYearBalanceLineChartArray();
 	this.YearLineChartArray = excellInput.getYearLineBar();
+	this.YearLineBalanceChartArray = excellInput.getYearBalanceLineChartArray();
 
 
 	this.fixBaseArraysFromExcell();

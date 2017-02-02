@@ -305,6 +305,8 @@ BalanceLineChartArray =[];
 	lineChartCreate ( AllTransactions);
 
 
+	generateDataDoneEvent();
+
 /*alert(" done ? ")
   for ( var i  in years){
   	console.log(" year : " + i);
@@ -394,7 +396,6 @@ for ( var index in transactionLoaded){
         }
 	}
 
-  generateDataDoneEvent();
 }
 
 
@@ -514,7 +515,9 @@ excellParser.getIncomeFromArray = function(){ return IncomeFromArray;}
 
 /*----------------*/
 excellParser.getYearLineBar = function (){return LineChartArray;}
-excellParser.getYearBalanceLineChartArray = function (){ return  BalanceLineChartArray;}
+excellParser.getYearBalanceLineChartArray = function (){ 
+															return  BalanceLineChartArray;
+														}
 
 module.exports = excellParser;
 

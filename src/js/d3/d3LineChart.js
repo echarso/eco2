@@ -26,7 +26,7 @@ d3LineChart.create= function(el,props, state) {
 
 
 
-svg = d3.select("svg");
+svg = d3.select(el);
 
  margin = {top: 20, right: 80, bottom: 30, left: 50};
 width = props.width - margin.left - margin.right;
@@ -58,10 +58,10 @@ d3LineChart.update =  function(el, state) {
 
 
 
-  var data = state.barData;
-  data.sort(function(a, b) { return a.time - b.time; });
+var data = state.barData;
 
-  var moneyGroups = state.colorKeys;
+var moneyGroups = state.colorKeys;
+
 
   var indexSvg = 0 ;
   var keys = moneyGroups.map(function(id) {
@@ -74,7 +74,7 @@ d3LineChart.update =  function(el, state) {
       };
   });
 
-
+console.log(keys);
 
   x.domain(d3.extent(data, function(d) {  d.date = d.date.replace(/-/g,"");
                                           return parseTime(d.date);
@@ -86,6 +86,8 @@ d3LineChart.update =  function(el, state) {
   ]);
 
   z.domain(keys.map(function(c) { return c.id; }));
+
+  //g[indexSvg].selectAll(".lineKey").transition().duration(0).attr("height", 0).attr("width", 0).remove();
 
   g[indexSvg].append("g")
       .attr("class", "axis axis--x")
@@ -161,7 +163,6 @@ var focus = g[indexSvg].append("g")
 
     function mousemove() {
       var x0 = x.invert(d3.mouse(this)[0]);
-      console.log ( "x0---->" + x0);
       var i = bisectDate(data, x0, 1);
       var    d0 = data[i - 1];
       var d1 = data[i];
