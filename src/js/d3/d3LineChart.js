@@ -4,8 +4,6 @@
 
 var d3 = require('d3');
 var d3LineChart = {};
-var svg;
-var g;
 
 var x;
 var y;
@@ -20,19 +18,23 @@ var margin;
 
 var g=[];
 var svg = [];
-var line =[];
+
+var indexPageSpecific = 0;
 
 d3LineChart.create= function(el,props, state) {
 
+console.log( " line chart create indexPageSpecific " + indexPageSpecific);
 
+if ( indexPageSpecific > 1 ) indexPageSpecific = 0;
 
-svg = d3.select(el);
+svg[indexPageSpecific] = d3.select(el);
 
  margin = {top: 20, right: 80, bottom: 30, left: 50};
 width = props.width - margin.left - margin.right;
 height = props.height - margin.top - margin.bottom;
 
-g[0] = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")") ;
+
+g[indexPageSpecific] = svg[indexPageSpecific].append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")") ;
 
 parseTime = d3.timeParse("%Y%m%d");
 bisectDate = d3.bisector(function(d) { return d.date; }).left;
@@ -46,6 +48,7 @@ line = d3.line()
     .x(function(d) {  return x(d.date); })
     .y(function(d) { return y(d.money); }) ;
 
+
  this.update(el, state);
  //highway();
 }
@@ -54,7 +57,9 @@ line = d3.line()
 
 d3LineChart.update =  function(el, state) {
 
-
+console.log( " update line cahrt  indexPageSpecific " + indexPageSpecific);
+console.log(state.barData);
+console.log(" ====================== end =================== ")
 
 
 
@@ -63,7 +68,6 @@ var data = state.barData;
 var moneyGroups = state.colorKeys;
 
 
-  var indexSvg = 0 ;
   var keys = moneyGroups.map(function(id) {
      return {
         id: id,
@@ -74,7 +78,6 @@ var moneyGroups = state.colorKeys;
       };
   });
 
-console.log(keys);
 
   x.domain(d3.extent(data, function(d) {  d.date = d.date.replace(/-/g,"");
                                           return parseTime(d.date);
@@ -89,12 +92,12 @@ console.log(keys);
 
   //g[indexSvg].selectAll(".lineKey").transition().duration(0).attr("height", 0).attr("width", 0).remove();
 
-  g[indexSvg].append("g")
+  g[indexPageSpecific%2].append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
 
-  g[indexSvg].append("g")
+  g[indexPageSpecific%2].append("g")
       .attr("class", "axis axis--y")
       .call(d3.axisLeft(y).ticks(6).tickFormat(function(d) { return parseInt(d / 1000) + "k"; }))
       //.call(d3.axisLeft(y))
@@ -107,7 +110,7 @@ console.log(keys);
 
 
 
-  var lineKey = g[indexSvg].selectAll(".lineKey")
+  var lineKey = g[indexPageSpecific%2].selectAll(".lineKey")
     .data(keys)
     .enter().append("g")
       .attr("class", "lineKey");
@@ -127,8 +130,11 @@ console.log(keys);
       .style("font", "10px sans-serif")
       .text(function(d) {  return d.id; });
 
-//////////////////// tool tip 
 
+      indexPageSpecific++;
+
+//////////////////// tool tip 
+/*
 var focus = g[indexSvg].append("g")
         .attr("class", "focus")
         .style("display", "none");
@@ -185,7 +191,8 @@ var focus = g[indexSvg].append("g")
       focus.select("text").text(function() { return d.value; });
       focus.select(".x-hover-line").attr("y2", height - y(d.value));
       focus.select(".y-hover-line").attr("x2", width + width);
-    }
+      */
+ 
 
 
 }// end of update

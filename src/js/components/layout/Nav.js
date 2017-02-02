@@ -35,11 +35,8 @@ export default class Nav extends React.Component {
           </div>
           <div class={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class={featuredClass}>
-                <IndexLink to="/" onClick={this.toggleCollapse.bind(this)}>Todos</IndexLink>
-              </li>
               <li class={archivesClass}>
-                <Link to="economyreport" onClick={this.toggleCollapse.bind(this)}>Yearly/Monthly Economy Report</Link>
+                <IndexLink to="/" onClick={this.toggleCollapse.bind(this)}>Yearly/Monthly Economy Report</IndexLink>
               </li>
               <li class={settingsClass}>
                 <Link to="info" onClick={this.toggleCollapse.bind(this)}>Economy Time Line Chart</Link>

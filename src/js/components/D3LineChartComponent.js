@@ -23,7 +23,6 @@ constructor(){
       colorKeys: ["expenses","income"]
   };
 
- alert(" calling constructor for line bar");
  
 
 }
@@ -35,12 +34,10 @@ componentDidMount() {
     D3DataStore.on("YEAR_LINE_CHART_CHANGE", this.fetchYearMonthLineData);
 
 
- alert(" calling componentDidMount for line bar");
-  //if ( ! D3DataStore.getAlreadyLineMounted() ){
-
      D3DataStore.setAlreadyLineMounted(true);
 
      var el = this.refs.lineBar;
+     
        d3LineChart.create(el, {
         width: 1000,
         height: 500
@@ -52,7 +49,6 @@ componentDidMount() {
 }
   componentDidUpdate() {
 
-  alert(" calling componentDidUpdate 333  for line bar");
 
   //	console.log(" 3 componentDidUpdate bar chart it is updating ");
      var el = this.refs.lineBar;

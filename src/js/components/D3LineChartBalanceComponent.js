@@ -20,7 +20,7 @@ constructor(){
 
   this.state = {
       barData:  D3DataStore.getYearLineBalanceChartArray(),
-      colorKeys: ["expenses","income"]
+      colorKeys: ["balance"]
   };
 
  
@@ -33,12 +33,10 @@ componentDidMount() {
     D3DataStore.on("MONTH_LINE_CHART_BALANCE_CHANGE", this.fetchMonthBalanceData);
     D3DataStore.on("YEAR_LINE_CHART_BALANCE_CHANGE", this.fetchYearBalanceData);
 
+  D3DataStore.setAlreadyLineMounted(true);
 
-  //if ( ! D3DataStore.getAlreadyLineMounted() ){
-
-     D3DataStore.setAlreadyLineMounted(true);
-
-     var el = this.refs.lineBar;
+     var el = this.refs.lineBar2;
+     
        d3LineChart.create(el, {
         width: 1000,
         height: 500
@@ -52,7 +50,7 @@ componentDidMount() {
 
 
   //	console.log(" 3 componentDidUpdate bar chart it is updating ");
-     var el = this.refs.lineBar;
+     var el = this.refs.lineBar2;
 
     d3LineChart.update(el, {
         "barData":  D3DataStore.getYearLineBalanceChartArray(),
@@ -93,7 +91,7 @@ componentDidMount() {
   	D3DataStore.removeListener("MONTH_LINE_CHART_CHANGE", this.fetchMonthBalanceData);
     D3DataStore.removeListener("YEAR_LINE_CHART_CHANGE", this.fetchYearBalanceData);
 
-  	var el = this.refs.lineBar;
+  	var el = this.refs.lineBar2;
     d3LineChart.destroy(el);
   };
 
@@ -101,7 +99,7 @@ componentDidMount() {
   render() {
   	
     return (
-     	 <svg ref="lineBar" width="960" height="500"></svg>   
+     	 <svg ref="lineBar2" width="960" height="500"></svg>   
     );
 
   }
