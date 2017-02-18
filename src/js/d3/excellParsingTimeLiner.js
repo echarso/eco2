@@ -26,6 +26,7 @@ A:::numeric_input->8 B:::text_input->text, C:::plain
 var excellParser = {};
 
 var AllTransactions =[];
+var allTransactionsByDate = {};
 var PROJECT_BANK_GOOGLE = [];
 var years = [];
 var ExpensesToArray =[];
@@ -35,6 +36,8 @@ var LineChartKeys =["expenses","income"];
 var BalanceLineChartArray =[];
 var BalanceLineChartKeys=["balance"];
 var XLSX = require('xlsx');
+
+
 
 import * as  D3Actions from "../actions/D3Actions";
 
@@ -485,7 +488,16 @@ function lineChartCreate(allTransactions){
 
     for ( var i = allTransactions.length -1 ; i > -1  ; i--){
 
+
         var tr = allTransactions[i];
+        if ( allTransactionsByDate[tr.date] ){
+        	allTransactionsByDate[tr.date].push(tr);
+        }else{
+        	allTransactionsByDate[tr.date] =[];
+        	allTransactionsByDate[tr.date].push(tr);
+        }
+
+
         var input ={};
         input.date =tr.date;
         if ( tr.transaction <0 ){
@@ -506,12 +518,17 @@ function lineChartCreate(allTransactions){
         BalanceLineChartArray.push(bInput);
     }
 
+console.log( " allTransactionsByDate");
+
+console.log( allTransactionsByDate);
+
 }
 
 excellParser.getLoadedData      = function(){  return years;}
 excellParser.getAllTransactions = function (){ return AllTransactions;}
 excellParser.getExpensesToArray = function(){ return ExpensesToArray;}
 excellParser.getIncomeFromArray = function(){ return IncomeFromArray;}
+excellParser.getAllTransactionsByDate = function(){ return allTransactionsByDate;}
 
 /*----------------*/
 excellParser.getYearLineBar = function (){return LineChartArray;}

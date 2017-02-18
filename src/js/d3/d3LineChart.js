@@ -10,6 +10,7 @@ var y;
 var z;
 var parseTime;
 var bisectDate;
+var formatTime;
 
 var line;
 var width;
@@ -18,20 +19,31 @@ var margin;
 
 var g=[];
 var svg = [];
-
 var indexPageSpecific = 0;
+var div ;
+var dateFormat = d3.timeFormat("%b %d, %y");
+
 
 d3LineChart.create= function(el,props, state) {
 
-console.log( " line chart create indexPageSpecific " + indexPageSpecific);
 
 if ( indexPageSpecific > 1 ) indexPageSpecific = 0;
 
 svg[indexPageSpecific] = d3.select(el);
 
- margin = {top: 20, right: 80, bottom: 30, left: 50};
+margin = {top: 20, right: 80, bottom: 30, left: 50};
 width = props.width - margin.left - margin.right;
 height = props.height - margin.top - margin.bottom;
+
+
+
+if ( indexPageSpecific == 0 ){
+  
+  // tool tip placeholder attached only once
+  div = d3.select("body").append("div") 
+      .attr("class", "tooltip")       
+     .style("opacity", 1.5);
+}
 
 
 g[indexPageSpecific] = svg[indexPageSpecific].append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")") ;
@@ -50,6 +62,7 @@ line = d3.line()
 
 
  this.update(el, state);
+ indexPageSpecific++;
  //highway();
 }
 
@@ -57,9 +70,8 @@ line = d3.line()
 
 d3LineChart.update =  function(el, state) {
 
-console.log( " update line cahrt  indexPageSpecific " + indexPageSpecific);
-console.log(state.barData);
-console.log(" ====================== end =================== ")
+
+// Define the div for the tooltip
 
 
 
@@ -90,7 +102,6 @@ var moneyGroups = state.colorKeys;
 
   z.domain(keys.map(function(c) { return c.id; }));
 
-  //g[indexSvg].selectAll(".lineKey").transition().duration(0).attr("height", 0).attr("width", 0).remove();
 
   g[indexPageSpecific%2].append("g")
       .attr("class", "axis axis--x")
@@ -131,11 +142,38 @@ var moneyGroups = state.colorKeys;
       .text(function(d) {  return d.id; });
 
 
-      indexPageSpecific++;
+   lineKey.each(function(d,i){
+      
+            var inputD = d;
+            d3.select(this).selectAll("dot")
+            .data(d.values)
+            .enter()
+            .append("circle")
+                  .attr("r", 2)   
+                  .style("fill",function(d) { return z(inputD.id); })
+                  .attr("cx", function(d) {  d.parentId = inputD.id; return x(d.date); })     
+                  .attr("cy", function(d) {   return y(d.money); })   
+                  .on("mouseover", function(d) {    
+                                div.transition()    
+                                    .duration(200)    
+                                    .style("opacity", 1.9);    
+
+                                div.html( inputD.id +" : "+ dateFormat(d.date) + "<br/>"  + d.money)  
+                                    .style("left", (d3.event.pageX) + "px")   
+                                    .style("top", (d3.event.pageY - 28) + "px");  
+                                })          
+                  .on("mouseout", function(d) {   
+                                div.transition()    
+                                    .duration(500)    
+                                    .style("opacity", 0); 
+                  });
+    });
+
+
 
 //////////////////// tool tip 
 /*
-var focus = g[indexSvg].append("g")
+var focus = g[indexPageSpecific%2].append("g")
         .attr("class", "focus")
         .style("display", "none");
 
@@ -158,7 +196,7 @@ var focus = g[indexSvg].append("g")
 
 
 
-  svg.append("rect")
+  svg[indexPageSpecific%2].append("rect")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("class", "overlay")
         .attr("width", width)
@@ -167,22 +205,32 @@ var focus = g[indexSvg].append("g")
         .on("mouseout", function() { focus.style("display", "none"); })
         .on("mousemove", mousemove);
 
-    function mousemove() {
+    function mousemove(d) {
+      console.log ( "  fomr x " );
+      console.log( d3.mouse(this)[0] );
+
       var x0 = x.invert(d3.mouse(this)[0]);
       var i = bisectDate(data, x0, 1);
-      var    d0 = data[i - 1];
+      console.log( data );  
+     // findDForDate( data , x0);
+      var d0 = data[i - 1];
       var d1 = data[i];
 
-
+console.log ( " d ---->" );
+console.log( d);
       console.log ( "i---->" + i);
                     
 
-          console.log ( " d0");
-          console.log (  d0);
+      
           
-          console.log ( " d1");
-          console.log (  d1);
-          
+          console.log( "x0");
+          console.log(x0);
+
+          console.log( "x0 date " + x0.getDay());
+          console.log( " x0 month " + x0.getMonth()) ;
+          console.log( " x0 year " + x0.getYear()) ;
+
+          // wrong dates 
       var  d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
           
@@ -191,10 +239,10 @@ var focus = g[indexSvg].append("g")
       focus.select("text").text(function() { return d.value; });
       focus.select(".x-hover-line").attr("y2", height - y(d.value));
       focus.select(".y-hover-line").attr("x2", width + width);
-      */
+     
  
-
-
+ }
+*/
 }// end of update
 
 
